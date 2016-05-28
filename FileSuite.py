@@ -5,7 +5,7 @@ from os import remove
 from os import makedirs
 import shutil
 
-directory = 'G:/'
+directory = 'C:/'
 
 
 def configure_img():
