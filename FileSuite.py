@@ -255,7 +255,7 @@ class ListView:
 		)
 
 	def __init__(self, parent, preview):
-		self.directory = 'G:/'
+		self.directory = 'C:/'
 		self.view = []
 		self.preview = preview
 		self.parent = parent
