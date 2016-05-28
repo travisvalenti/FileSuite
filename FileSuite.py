@@ -4,7 +4,6 @@ from os import path
 from os import remove
 from os import makedirs
 import shutil
-from PIL import Image, ImageTk
 
 directory = 'G:/'
 
@@ -150,11 +149,11 @@ class Toolbar:
 
 class Preview:
 
-	def preview_txt(self, directory):
-		print("dir: " + directory)
+	def preview_txt(self, preview_directory):
+		print("dir: " + preview_directory)
 		self.view.pack_forget()
-		self.message["text"] = directory
-		f = open(directory, 'r')
+		self.message["text"] = preview_directory
+		f = open(preview_directory, 'r')
 		self.view = Text(self.frame)
 		self.view.insert(INSERT, f.read())
 		self.view.pack(fill = BOTH, expand = 1)
@@ -177,31 +176,31 @@ class Preview:
 		self.view = Frame(self.frame)
 		self.view.pack(fill = BOTH, expand = 1)
 
-	def preview(self, directory, file):
+	def preview(self, preview_directory, file):
 		_, file_ext = path.splitext(file)
-		print(directory[-1:])
-		if directory[-1:] == '/':
-			calculated_directory = directory + file
+		print(preview_directory[-1:])
+		if preview_directory[-1:] == '/':
+			calculated_directory = preview_directory + file
 		else:
-			calculated_directory = directory + '/' + file
+			calculated_directory = preview_directory + '/' + file
 		print(file_ext)
 		if file_ext.lower() in self.previews:
 			self.previews[file_ext.lower()](calculated_directory)
 
 
 class FolderView:
-	def __init__(self, parent):
+	def __init__(self, parent, preview):
 		self.frame = Frame(parent)
 		self.frame.pack(side = LEFT)
 
-		list_view = ListView(self.frame)
+		ListView(self.frame, preview)
 
 
-def get_directory(path):
+def get_directory(get_path):
 	d = []
 	f = []
 
-	for (dir_path, dir_names, file_names) in walk(path):
+	for (dir_path, dir_names, file_names) in walk(get_path):
 		d.extend(dir_names)
 		f.extend(file_names)
 		break
@@ -220,7 +219,7 @@ class ListView:
 		self.repopulate()
 
 	def root_path(self):
-
+		x = 0
 		if not self.directory[len(self.directory) - 1] == '/':
 			for i in range(len(self.directory)):
 				if self.directory[i] == '/':
@@ -258,7 +257,7 @@ class ListView:
 	def __init__(self, parent, preview):
 		self.directory = 'G:/'
 		self.view = []
-		self.prev = preview
+		self.preview = preview
 		self.parent = parent
 
 		self.canvas = Canvas(self.parent)
@@ -288,8 +287,8 @@ class ListView:
 		remove(direct)
 		self.repopulate()
 
-	def create_folder(self, directory):
-		new_path = self.directory + '/' + directory
+	def create_folder(self, folder_directory):
+		new_path = self.directory + '/' + folder_directory
 		if not path.exists(new_path):
 			makedirs(new_path)
 
@@ -301,16 +300,16 @@ class ListView:
 		d, f = get_directory(self.directory)
 		spacer = "   "
 		dirs = []
-		for directory in d:
+		for iterated_directory in d:
 			i = len(dirs)
 			b = Button(
 				self.frame,
 				image = img_dict['folder'],
-				text = spacer + directory,
+				text = spacer + iterated_directory,
 				compound = LEFT,
 				anchor = W
 			)
-			dirs.append(directory)
+			dirs.append(iterated_directory)
 			b.configure(command = lambda this = b: this.focus_set())
 			b.bind("<Double-Button-1>", lambda x, ind = i: self.go_to(dirs[ind]))
 			b.bind("<Delete>", lambda x, ind = i: self.delete_folder(self.directory + '/' + dirs[ind]))
@@ -328,9 +327,9 @@ class ListView:
 				anchor = W
 			)
 			temp.configure(command = lambda this = temp: this.focus_set())
-			temp.bind("<Delete>", lambda x, f = file: self.delete_file(self.directory + f))
+			temp.bind("<Delete>", lambda x, facsimile = file: self.delete_file(self.directory + facsimile))
 
-			temp.bind("<Double-Button-1>", lambda x, f = file: self.prev.preview(self.directory, f))
+			temp.bind("<Double-Button-1>", lambda x, fork = file: self.preview.preview(self.directory, fork))
 			temp.pack(fill = X, expand = 1)
 			self.view.append(temp)
 
