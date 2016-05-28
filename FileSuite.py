@@ -131,11 +131,45 @@ class FileSuite:
 		else:
 			alert["text"] = "You must enter a file name"
 
+	def goto_root(self):
+		top = Toplevel()
+		top.geometry('{}x{}'.format(200, 80))
+		top.title("New File")
+
+		msg = Message(top, text = "Please type a file name", width = 200)
+		msg.pack(fill = X)
+
+		# v = StringVar()
+
+		entry = Entry(top)
+		entry.pack(fill = X)
+		entry.focus_set()
+
+		frame = Frame(top)
+		frame.pack(fill = X)
+
+		b_confirm = Button(frame, text = "Okay", command = lambda: self.goto(top, entry.get(), msg))
+		b_confirm.pack(side = RIGHT)
+		b_cancel = Button(frame, text = "Cancel", command = top.destroy)
+		b_cancel.pack(side = LEFT)
+
+	def goto(self, top, location, alert):
+		if location == '':
+			alert["text"] = "Please enter a directory"
+		else:
+			self.file_view.directory = location
+			top.destroy()
+			self.file_view.repopulate()
+
+
 
 class Toolbar:
 	def __init__(self, suite, parent):
 		self.frame = Frame(parent)
 		self.frame.pack(fill = X)
+
+		self.button_root = Button(self.frame, text = "Go To", command = suite.goto_root)
+		self.button_root.pack(side = LEFT)
 
 		self.button_new_file = Button(self.frame, text = "New File", command = suite.create_file)
 		self.button_new_file.pack(side = LEFT)
@@ -255,7 +289,7 @@ class ListView:
 		)
 
 	def __init__(self, parent, preview):
-		self.directory = 'G:/'
+		self.directory = 'C:/'
 		self.view = []
 		self.preview = preview
 		self.parent = parent
