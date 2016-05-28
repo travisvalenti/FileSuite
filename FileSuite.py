@@ -255,7 +255,7 @@ class ListView:
 		)
 
 	def __init__(self, parent, preview):
-		self.directory = 'C:/'
+		self.directory = 'G:/'
 		self.view = []
 		self.preview = preview
 		self.parent = parent
@@ -283,8 +283,14 @@ class ListView:
 		shutil.rmtree(direct)
 		self.repopulate()
 
-	def delete_file(self, direct):
-		remove(direct)
+	def delete_file(self, direct, facs):
+
+		if direct[-1:] == '/':
+			remove(direct + facs)
+			print("Deleting: " + direct + facs)
+		else:
+			remove(direct + '/' + facs)
+			print("Deleting: " + direct + '/' + facs)
 		self.repopulate()
 
 	def create_folder(self, folder_directory):
@@ -327,7 +333,7 @@ class ListView:
 				anchor = W
 			)
 			temp.configure(command = lambda this = temp: this.focus_set())
-			temp.bind("<Delete>", lambda x, facsimile = file: self.delete_file(self.directory + facsimile))
+			temp.bind("<Delete>", lambda x, facsimile = file: self.delete_file(self.directory, facsimile))
 
 			temp.bind("<Double-Button-1>", lambda x, fork = file: self.preview.preview(self.directory, fork))
 			temp.pack(fill = X, expand = 1)
