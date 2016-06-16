@@ -3,6 +3,7 @@ from os import walk
 from os import path
 from os import remove
 from os import makedirs
+from os import startfile
 import shutil
 
 directory = 'C:/'
@@ -224,7 +225,7 @@ class Preview:
 
 	def preview(self, preview_directory, file):
 		_, file_ext = path.splitext(file)
-		print(preview_directory[-1:])
+		#print(preview_directory[-1:])
 		if preview_directory[-1:] == '/':
 			calculated_directory = preview_directory + file
 		else:
@@ -379,10 +380,17 @@ class ListView:
 				anchor = W
 			)
 			temp.configure(command = lambda this = temp: this.focus_set())
-			temp.bind("<Delete>", lambda x, facsimile = file: self.delete_file(self.directory, facsimile))
 
-			temp.bind("<Double-Button-1>", lambda x, fork = file: self.preview.preview(self.directory, fork))
+			temp.bind("<Delete>", lambda x, facsimile = file: self.delete_file(self.directory, facsimile))
+			if self.directory[-1:] == '/':
+				calculated_directory = self.directory + file
+			else:
+				calculated_directory = self.directory + '/' + file
+			temp.bind("<Double-Button-1>", lambda x, fork = calculated_directory: startfile(fork))
+			temp.bind("<Button-1>", lambda x, fork = file: self.preview.preview(self.directory, fork))
+
 			temp.pack(fill = X, expand = 1)
+
 			self.view.append(temp)
 
 	def create_file(self, name):
