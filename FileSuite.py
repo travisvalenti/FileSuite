@@ -195,6 +195,14 @@ class Preview:
 		print(f.read())
 		f.close()
 
+	def preview_img(self, preview_directory):
+		self.view.pack_forget()
+		self.message["text"] = preview_directory
+		image = PhotoImage(file=preview_directory)
+		self.view = Label(self.frame, image = image)
+		self.view.image = image
+		self.view.pack()
+
 	def __init__(self, parent):
 		self.frame = Frame(parent)
 		self.frame.pack(fill = BOTH, expand = 1)
@@ -204,6 +212,10 @@ class Preview:
 			'.bat': self.preview_txt,
 			'.py': self.preview_txt,
 			'': self.preview_txt,
+			'.png': self.preview_img,
+			'.gif': self.preview_img,
+			'.pgm': self.preview_img,
+			'.ppm': self.preview_img,
 		}
 		self.message = Message(self.frame, text = "[No File Selected]", width = 100)
 		self.message.pack()
